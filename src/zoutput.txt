@@ -1,41 +1,39 @@
 I foo FUNCTION
-Inserted in ScopeTable# 1 at position 2 , 1
+Inserted in ScopeTable# 1 at position 1 , 1
 
 I i VAR
-Inserted in ScopeTable# 1 at position 0 , 1
+Inserted in ScopeTable# 1 at position 2 , 1
 
 L foo
-Found in ScopeTable# 1 at position 0 , 1
-
 L j
 I 5 NUMBER
-Inserted in ScopeTable# 1 at position 4 , 1
-
-P A
-
- ScopeTable # 1
-0 -->  < VAR : i > 
-1 --> 
-2 -->  < FUNCTION : foo > 
-3 --> 
-4 -->  < NUMBER : 5 > 
-5 --> 
-6 --> 
-D j
-Not Found
-
-D i
-Deleted ScopeTable# 1 at position 0 , 1
+Inserted in ScopeTable# 1 at position 5 , 1
 
 P A
 
  ScopeTable # 1
 0 --> 
-1 --> 
-2 -->  < FUNCTION : foo > 
+1 -->  < FUNCTION : foo > 
+2 -->  < VAR : i > 
 3 --> 
-4 -->  < NUMBER : 5 > 
-5 --> 
+4 --> 
+5 -->  < NUMBER : 5 > 
+6 --> 
+D j
+Not Found
+
+D i
+Not Found
+
+P A
+
+ ScopeTable # 1
+0 --> 
+1 -->  < FUNCTION : foo > 
+2 -->  < VAR : i > 
+3 --> 
+4 --> 
+5 -->  < NUMBER : 5 > 
 6 --> 
 S 
 
@@ -43,73 +41,53 @@ S
 New ScopeTable with id 2 created
 
 I <= RELOP
-Inserted in ScopeTable# 2 at position 2 , 1
+Inserted in ScopeTable# 2 at position 1 , 1
 
 I == RELOP
-Inserted in ScopeTable# 2 at position 3 , 1
+Inserted in ScopeTable# 2 at position 2 , 1
 
 P A
 
  ScopeTable # 2
 0 --> 
-1 --> 
-2 -->  < RELOP : <= > 
-3 -->  < RELOP : == > 
+1 -->  < RELOP : <= > 
+2 -->  < RELOP : == > 
+3 --> 
 4 --> 
 5 --> 
 6 --> 
  ScopeTable # 1
 0 --> 
-1 --> 
-2 -->  < FUNCTION : foo > 
+1 -->  < FUNCTION : foo > 
+2 -->  < VAR : i > 
 3 --> 
-4 -->  < NUMBER : 5 > 
-5 --> 
+4 --> 
+5 -->  < NUMBER : 5 > 
 6 --> 
 I <= RELOP
-Inserted in ScopeTable# 2 at position 2 , 2
+Inserted in ScopeTable# 2 at position 3 , 1
 
 I foo FUNCTION
-Inserted in ScopeTable# 2 at position 2 , 3
+Inserted in ScopeTable# 2 at position 4 , 1
 
 D ==
-Deleted ScopeTable# 2 at position 3 , 1
+Not Found
 
 P A
 
  ScopeTable # 2
 0 --> 
-1 --> 
-2 -->  < RELOP : <= >  < RELOP : <= >  < FUNCTION : foo > 
+1 -->  < RELOP : <= > 
+2 -->  < RELOP : == > 
+3 -->  < RELOP : <= > 
+4 -->  < FUNCTION : foo > 
+5 --> 
+6 --> 
+ ScopeTable # 1
+0 --> 
+1 -->  < FUNCTION : foo > 
+2 -->  < VAR : i > 
 3 --> 
 4 --> 
-5 --> 
-6 --> 
- ScopeTable # 1
-0 --> 
-1 --> 
-2 -->  < FUNCTION : foo > 
-3 --> 
-4 -->  < NUMBER : 5 > 
-5 --> 
-6 --> 
-E 
-
-ScopeTable with id 2 removed
-
-I t t
-Inserted in ScopeTable# 1 at position 4 , 2
-
-I k k
-Inserted in ScopeTable# 1 at position 2 , 2
-
-P A
-
- ScopeTable # 1
-0 --> 
-1 --> 
-2 -->  < FUNCTION : foo >  < k : k > 
-3 --> 
-4 -->  < NUMBER : 5 >  < k : k > 
-5 --> 
+5 -->  < NUMBER : 5 > 
 6 --> 

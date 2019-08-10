@@ -1,3 +1,111 @@
-< CONST_CHAR , '\' >
+< STRING , "asdf" >
+< STRING , "qwert\
+poiuy\
+zxcvb" >
+<INT>
+< IDENTIFIER , main >
+< LPAREN , ( >
+< RPAREN , ) >
+< LCURL , { >
+< IDENTIFIER , a0 >
+< COMMA , , >
+< IDENTIFIER , bqw1 >
+< COMMA , , >
+< CONST_INT , 1 >
+< IDENTIFIER , qw >
+< COMMA , , >
+< IDENTIFIER , __a0 >
+< COMMA , , >
+< IDENTIFIER , _a_1 >
+< SEMICOLON , ; >
+<IF>
+< LPAREN , ( >
+< IDENTIFIER , E >
+< RPAREN , ) >
+< LCURL , { >
+< IDENTIFIER , S >
+< SEMICOLON , ; >
+< IDENTIFIER , a >
+< ADDOP , + >
+< ASSIGNOP , = >
+< CONST_INT , 1 >
+< SEMICOLON , ; >
+< IDENTIFIER , a >
+< ADDOP , - >
+< ASSIGNOP , = >
+< CONST_INT , 1 >
+< SEMICOLON , ; >
+< IDENTIFIER , a >
+< MULOP , * >
+< ASSIGNOP , = >
+< CONST_INT , 1 >
+< SEMICOLON , ; >
+< IDENTIFIER , a >
+< MULOP , / >
+< ASSIGNOP , = >
+< CONST_INT , 1 >
+< SEMICOLON , ; >
+< IDENTIFIER , a >
+< MULOP , % >
+< ASSIGNOP , = >
+< CONST_INT , 2 >
+< SEMICOLON , ; >
+< RCURL , } >
+<ELSE>
+< LCURL , { >
+< IDENTIFIER , s >
+< SEMICOLON , ; >
+< RCURL , } >
+<DO>
+< LCURL , { >
+< RCURL , } >
+<WHILE>
+< LPAREN , ( >
+< CONST_INT , 1 >
+< RPAREN , ) >
+< SEMICOLON , ; >
+<FOR>
+< LPAREN , ( >
+<INT>
+< IDENTIFIER , i >
+< ASSIGNOP , = >
+< CONST_INT , 0 >
+< SEMICOLON , ; >
+< IDENTIFIER , i >
+< RELOP , < >
+< CONST_INT , 10 >
+< SEMICOLON , ; >
+< IDENTIFIER , i >
+< INCOP , ++ >
+< RPAREN , ) >
+< LCURL , { >
+< IDENTIFIER , a >
+< RELOP , == >
+< IDENTIFIER , b >
+< SEMICOLON , ; >
+< IDENTIFIER , a >
+< RELOP , <= >
+< IDENTIFIER , b >
+< SEMICOLON , ; >
+< IDENTIFIER , a >
+< RELOP , != >
+< IDENTIFIER , b >
+< SEMICOLON , ; >
+< RCURL , } >
+<RETURN>
+< CONST_INT , 0 >
+< SEMICOLON , ; >
+< RCURL , } >
+< CONST_CHAR , '\\' >
+< CONST_CHAR , '\n' >
+< CONST_CHAR , '\t' >
+< CONST_CHAR , '\b' >
+< CONST_CHAR , '\r' >
+< CONST_CHAR , '\n' >
+< CONST_CHAR , '\a' >
+< CONST_CHAR , '\0' >
+< CONST_CHAR , 'a' >
+< CONST_CHAR , 'b' >
+< CONST_CHAR , 'A' >
+< CONST_CHAR , 'Z' >
 < CONST_CHAR , '\"' >
-< CONST_CHAR , '\' >

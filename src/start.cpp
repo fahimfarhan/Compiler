@@ -133,7 +133,7 @@ void compilerPart1(){
         }
     }
 
-    if(!symbolTable){   delete symbolTable; }
+    // if(!symbolTable){   delete symbolTable; }
 }
 
 int main(){

@@ -10,32 +10,44 @@
 //ifstream fin;
 ofstream tout , logout;
 SymbolTable *symbolTable;
-map<string, char > mp;
 
-void preprocess(){
-    // ntafrbv0
-    mp["\'\\n\'"] = '\n';
-    mp["\'\\t\'"] = '\t';
-    mp["\'\\a\'"] = '\a';
-    mp["\'\\f\'"] = '\f';
-    mp["\'\\r\'"] = '\r';
-    mp["\'\\b\'"] = '\b';
-    mp["\'\\v\'"] = '\v';
-    mp["\'\\0\'"] = '\0';
-}
+
+int lineCount=0, errorCount=0;
+
+void preprocess(){}
     
 void insertToken(string s1, string s2){
     Token* token;
     token = new Token;
-    token->setTokenAttr(s1);
-    token->setTokenName(s2);
+    token->setTokenAttr(s2);
+    token->setTokenName(s1);
     
     symbolTable->Insert(*token);
     token = NULL;
-    logout<<"Inserted in ScopeTable# "<<globalSopeNum<<" at position "<<scopeTablePos1<<" , "<<scopeTablePos2<<"\n\n";
-    
 }
-    
+
+void defaultToDo(string in){
+    {
+        tout<<"< "<<in<<" , "<<yytext<<" >\n";
+        logout<<"Line No. "<<lineCount<<": Token <"<<in<<"> Lexeme "<<yytext<<" found\n";
+        insertToken(in, yytext);
+    }
+}
+
+void OpPunch(string in){
+    {
+        tout<<"< "<<in<<" , "<<yytext<<" >\n";
+        logout<<"Line No. "<<lineCount<<": Token <"<<in<<"> Lexeme "<<yytext<<" found\n";
+     //   insertToken(in, yytext);
+    }
+}
+
+string strinngProcessor(string in){
+    string out = "";
+
+    return out;
+}
+
 %}
 
 IF "if" 
@@ -55,6 +67,8 @@ CASE "case"
 DEFAULT "default" 
 CONTINUE "continue"
 
+NEWLINE [\n]
+WHITESPACE [ \t\v\f\r]+
 
 digit [0-9]
 letter [A-Za-z]
@@ -72,41 +86,105 @@ delimchar [ntafr"bv0]
 
 SPECIAL_CONST_CHAR1 {singlequote}{backslash}{delimchar}{singlequote}|{singlequote}{backslash}{singlequote}
 
-SPECIAL_CONST_CHAR '\\[ntafr"bv0]'|'\\'
+SPECIAL_CONST_CHAR '\\[ntafr"bv0]'
 CONST_CHAR '{letter}'
 
 LITERAL   \\([nabfrtv\\0]|(''))|[^\\'\n]
 CHAR_LITERAL '({LITERAL})'
 
+bs92    '{backslash}{backslash}'
+
+RELOP <|<=|>|>=|==|!=
+
+IDENTIFIER ({letter}|_)({letter}|{digit}|_)*
+
+stringContent ({letter}|{digit}|{WHITESPACE})*
+
+SINGLE_LINE_STR \"({stringContent})\"
+MULTI_LINE_STR \"({stringContent}\\\n)+\"
+
+STRING \"(([^\"\n])|(\\\n))*\"
+
 %%
 
-{IF}        {  tout<<"<IF>\n";          } 
-{ELSE}      {  tout<<"<ELSE>\n";        }
-{FOR}       {  tout<<"<FOR>\n";         }
-{WHILE}     {  tout<<"<WHILE>\n";       }
-{DO}        {  tout<<"<DO>\n";          }
-{BREAK}     {  tout<<"<BREAK>\n";       }
-{INT}       {  tout<<"<INT>\n";         } 
-{CHAR}      {  tout<<"<CHAR>\n";        }
-{FLOAT}     {  tout<<"<FLOAT>\n";       }  
-{DOUBLE}    {  tout<<"<DOUBLE>\n";      }
-{VOID}      {  tout<<"<VOID>\n";        }
-{RETURN}    {  tout<<"<RETURN>\n";      }
-{SWITCH}    {  tout<<"<SWITCH>\n";      } 
-{CASE}      {  tout<<"<CASE>\n";        }
-{DEFAULT}   {  tout<<"<DEFAULT>\n";     } 
-{CONTINUE}  {  tout<<"<CONTINUE>\n";    }
+
+
+{IF}        {   tout<<"<IF>\n";
+                logout<<"Line No. "<<lineCount<<": Token <IF> Lexeme "<<yytext<<" found\n";
+            } 
+{ELSE}      {  tout<<"<ELSE>\n";
+                logout<<"Line No. "<<lineCount<<": Token <ELSE> Lexeme "<<yytext<<" found\n";
+            }
+{FOR}       {  tout<<"<FOR>\n";         
+                logout<<"Line No. "<<lineCount<<": Token <FOR> Lexeme "<<yytext<<" found\n";
+            }
+{WHILE}     {  tout<<"<WHILE>\n";
+                logout<<"Line No. "<<lineCount<<": Token <WHILE> Lexeme "<<yytext<<" found\n";
+           }
+{DO}        {  tout<<"<DO>\n";          
+                logout<<"Line No. "<<lineCount<<": Token <DO> Lexeme "<<yytext<<" found\n";
+            }
+{BREAK}     {  tout<<"<BREAK>\n";       
+                logout<<"Line No. "<<lineCount<<": Token <BREAK> Lexeme "<<yytext<<" found\n";
+            }
+{INT}       {  tout<<"<INT>\n";         
+                logout<<"Line No. "<<lineCount<<": Token <INT> Lexeme "<<yytext<<" found\n";
+            } 
+{CHAR}      {  tout<<"<CHAR>\n";        
+                logout<<"Line No. "<<lineCount<<": Token <CHAR> Lexeme "<<yytext<<" found\n";
+            }
+{FLOAT}     {  tout<<"<FLOAT>\n";       
+                logout<<"Line No. "<<lineCount<<": Token <FLOAT> Lexeme "<<yytext<<" found\n";
+            }  
+{DOUBLE}    {  tout<<"<DOUBLE>\n";      
+                logout<<"Line No. "<<lineCount<<": Token <DOUBLE> Lexeme "<<yytext<<" found\n";
+            }
+{VOID}      {  tout<<"<VOID>\n";        
+                logout<<"Line No. "<<lineCount<<": Token <VOID> Lexeme "<<yytext<<" found\n";
+            }
+{RETURN}    {  tout<<"<RETURN>\n";      
+                logout<<"Line No. "<<lineCount<<": Token <RETURN> Lexeme "<<yytext<<" found\n";
+            }
+{SWITCH}    {  tout<<"<SWITCH>\n";      
+                logout<<"Line No. "<<lineCount<<": Token <SWITCH> Lexeme "<<yytext<<" found\n";
+            } 
+{CASE}      {  tout<<"<CASE>\n";        
+                logout<<"Line No. "<<lineCount<<": Token <CASE> Lexeme "<<yytext<<" found\n";
+            }
+{DEFAULT}   {  tout<<"<DEFAULT>\n";     
+                logout<<"Line No. "<<lineCount<<": Token <DEFAULT> Lexeme "<<yytext<<" found\n";
+            } 
+{CONTINUE}  {  tout<<"<CONTINUE>\n";
+            logout<<"Line No. "<<lineCount<<": Token <CONTINUE> Lexeme "<<yytext<<" found\n";
+    }
 
 {CONST_INT}     {   
                     tout<<"< CONST_INT , "<<yytext<<" >\n";
+                    logout<<"Line No. "<<lineCount<<": Token <CONST_INT> Lexeme "<<yytext<<" found\n";
                     insertToken("CONST_INT", yytext);
                 }
 {CONST_FLOAT}   {   
                     tout<<"< CONST_FLOAT , "<<yytext<<" >\n"; 
+                    logout<<"Line No. "<<lineCount<<": Token <CONST_FLOAT> Lexeme "<<yytext<<" found\n";
+
                     insertToken("CONST_FLOAT", yytext);      
                 }
+
+{bs92}          {
+                    tout<<"< CONST_CHAR , "<<yytext<<" >\n";
+                    logout<<"Line No. "<<lineCount<<": Token <CONST_CHAR> Lexeme "<<yytext<<" found\n";
+
+                    char ch = 92;
+                    string s = "";
+                    s = s+ch;
+                    // tout<<"< bs92 , "<<s<<" >\n"; // eta hobe na
+                    insertToken("CONST_CHAR", s);
+                }
+
 {SPECIAL_CONST_CHAR} {
                     tout<<"< CONST_CHAR , "<<yytext<<" >\n"; 
+                    logout<<"Line No. "<<lineCount<<": Token <CONST_CHAR> Lexeme "<<yytext<<" found\n";
+
                     char ch = yytext[2];
                     char detectedChar=0;
                     // ntafr"bv0
@@ -117,29 +195,67 @@ CHAR_LITERAL '({LITERAL})'
                         case 'f': { detectedChar='\f';  break;  }
                         case 'r': { detectedChar='\r';  break;  }
                         case '"': { detectedChar='\"';  break;  }
-                        case '\\': { detectedChar='\\'; cout<<"\nhere\n"; break;  }
+                        //case '\\': { detectedChar='\\'; cout<<"\nhere\n"; break;  }
                         case 'b': { detectedChar='\b';  break;  }
                         case 'v': { detectedChar='\v';  break;  }
                         case '0': { detectedChar='\0';  break;  }
                         default:{   break;  }
                         
                     }
-                    string s123 = ""; s123+=detectedChar;
-                    cout<<(int)detectedChar<<"";
-                    yytext[0] = detectedChar;
-                    yytext[1] = '\0';
-                    insertToken("CONST_CHAR", s123);
+                    string temp = ""; temp+=detectedChar;
+                    // cout<<(int)detectedChar<<"";
+                    // yytext[0] = detectedChar;
+                    // yytext[1] = '\0';
+                    insertToken("CONST_CHAR", temp);
                 }
 {CONST_CHAR}        {
                     tout<<"< CONST_CHAR , "<<yytext<<" >\n";
+                    logout<<"Line No. "<<lineCount<<": Token <CONST_CHAR> Lexeme "<<yytext<<" found\n";
+
                     insertToken("CONST_INT", yytext);
                 }
+
+[+-]           { OpPunch("ADDOP"); }
+
+[*/%]           {   OpPunch("MULOP");  }
+"++"|"--"       {   OpPunch("INCOP");  }
+
+{RELOP}         {   OpPunch("RELOP");  }
+
+"="             {   OpPunch("ASSIGNOP");  }
+"&&"|"||"       {   OpPunch("LOGICOP");  }
+"!"             {    OpPunch("NOT");                }
+"(" {   OpPunch("LPAREN");  }
+")"              {   OpPunch("RPAREN");  }
+"{"              {   OpPunch("LCURL");  }
+"}"              {   OpPunch("RCURL");  }
+"["              {   OpPunch("LTHIRD");  }
+"]"              {   OpPunch("RTHIRD");  }
+","              {   OpPunch("COMMA");  }
+";"              {   OpPunch("SEMICOLON");  }
+
+{IDENTIFIER}    {   defaultToDo("IDENTIFIER");  }   
+
+{STRING}        {
+                    tout<<"< STRING , "<<yytext<<" >\n";
+                    logout<<"Line No. "<<lineCount<<": Token <STRING> Lexeme "<<yytext<<" found\n";
+                }
+
+
+"//".*                                    { /* DO NOTHING */  } 
+[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { /* DO NOTHING */  }
+
+{WHITESPACE}    {                       }
+{NEWLINE}       {   lineCount++;        }
+
+
 
 
 %%
 
 int main(int argc, char **argv){
-    
+// 
+     
     if(argc!=3){
 		printf("Please provide input file name and try again\n");
 		return 0;

@@ -38,24 +38,6 @@ void insertToken(string s1, string s2){
     
 %}
 
-IF "if" 
-ELSE "else"
-FOR "for"
-WHILE "while"
-DO  "do"
-BREAK "break"
-INT "int" 
-CHAR "char"
-FLOAT "float" 
-DOUBLE "double"
-VOID "void"
-RETURN "return"
-SWITCH "switch" 
-CASE "case"
-DEFAULT "default" 
-CONTINUE "continue"
-
-
 digit [0-9]
 letter [A-Za-z]
 CONST_INT {digit}+
@@ -78,63 +60,43 @@ CONST_CHAR '{letter}'
 LITERAL   \\([nabfrtv\\0]|(''))|[^\\'\n]
 CHAR_LITERAL '({LITERAL})'
 
+bs92    '{backslash}{backslash}'
+
+
+NEWLINE [\n]
+WHITESPACE [ \t\v\f\r]+
+
+
+stringContent ({letter}|{digit}|{WHITESPACE})*
+
+SINGLE_LINE_STR \"({stringContent})\"
+MULTI_LINE_STR1 \"({stringContent}{backslash})+\"
+
+MULTI_LINE_STR  \"(([^\"\n])|({backslash}{NEWLINE}))*\"
+
+COMMENT1 //(([^\n])|(\\\n))*
+
+MULTI_COMMENT_BEGIN /*
+MULTI_COMMENT_END */
+
+COMMENT2 {MULTI_COMMENT_BEGIN}(.*){MULTI_COMMENT_END}
+
+
+COMMENT {COMMENT1}|{COMMENT2}
 %%
 
-{IF}        {  tout<<"<IF>\n";          } 
-{ELSE}      {  tout<<"<ELSE>\n";        }
-{FOR}       {  tout<<"<FOR>\n";         }
-{WHILE}     {  tout<<"<WHILE>\n";       }
-{DO}        {  tout<<"<DO>\n";          }
-{BREAK}     {  tout<<"<BREAK>\n";       }
-{INT}       {  tout<<"<INT>\n";         } 
-{CHAR}      {  tout<<"<CHAR>\n";        }
-{FLOAT}     {  tout<<"<FLOAT>\n";       }  
-{DOUBLE}    {  tout<<"<DOUBLE>\n";      }
-{VOID}      {  tout<<"<VOID>\n";        }
-{RETURN}    {  tout<<"<RETURN>\n";      }
-{SWITCH}    {  tout<<"<SWITCH>\n";      } 
-{CASE}      {  tout<<"<CASE>\n";        }
-{DEFAULT}   {  tout<<"<DEFAULT>\n";     } 
-{CONTINUE}  {  tout<<"<CONTINUE>\n";    }
 
-{CONST_INT}     {   
-                    tout<<"< CONST_INT , "<<yytext<<" >\n";
-                    insertToken("CONST_INT", yytext);
-                }
-{CONST_FLOAT}   {   
-                    tout<<"< CONST_FLOAT , "<<yytext<<" >\n"; 
-                    insertToken("CONST_FLOAT", yytext);      
-                }
-{SPECIAL_CONST_CHAR} {
-                    tout<<"< CONST_CHAR , "<<yytext<<" >\n"; 
-                    char ch = yytext[2];
-                    char detectedChar=0;
-                    // ntafr"bv0
-                    switch(ch){
-                        case 'n': { detectedChar='\n';  break;  }
-                        case 't': { detectedChar='\t';  break;  }
-                        case 'a': { detectedChar='\a';  break;  }
-                        case 'f': { detectedChar='\f';  break;  }
-                        case 'r': { detectedChar='\r';  break;  }
-                        case '"': { detectedChar='\"';  break;  }
-                        case '\\': { detectedChar='\\'; cout<<"\nhere\n"; break;  }
-                        case 'b': { detectedChar='\b';  break;  }
-                        case 'v': { detectedChar='\v';  break;  }
-                        case '0': { detectedChar='\0';  break;  }
-                        default:{   break;  }
-                        
+
+{MULTI_LINE_STR}    {
+                        tout<<"< STRING , "<<yytext<<" >";
+                        logout<<"Line No. : Token <STRING> Lexeme "<<yytext<<" found\n";
                     }
-                    string s123 = ""; s123+=detectedChar;
-                    cout<<(int)detectedChar<<"";
-                    yytext[0] = detectedChar;
-                    yytext[1] = '\0';
-                    insertToken("CONST_CHAR", s123);
-                }
-{CONST_CHAR}        {
-                    tout<<"< CONST_CHAR , "<<yytext<<" >\n";
-                    insertToken("CONST_INT", yytext);
-                }
 
+{COMMENT}           {
+
+                        logout<<"Line No. : Token <COMMENT> Lexeme "<<yytext<<" found\n";
+    
+}
 
 %%
 
