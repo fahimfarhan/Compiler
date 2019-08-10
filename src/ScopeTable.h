@@ -6,8 +6,7 @@
 /* contents of the header file */
     #include <bits/stdc++.h>
     using namespace std;
-
-    int pos1, pos2;
+    int scopeTablePos1, scopeTablePos2;
 #endif
 
 #ifndef TOKEN
@@ -16,6 +15,7 @@
     #include "Token.h"
 #endif
 
+int hashFuncCounter=0;
 
 class ScopeTable{
 private:
@@ -33,12 +33,10 @@ public:
 
     int HashFunction(string tattr){ 
         int ret = 0; 
-        for(int i=0; i<tattr.size(); i++){  ret+=(int)tattr[i];  }
-        /* ret = abs(ret);
-        ret = (int)ret;
-        cout<<N<<"\n";
-        cout<<ret<<"\n";*/
-        ret = ret%N;
+        // for(int i=0; i<tattr.size(); i++){  ret+=(int)tattr[i];  }
+        hashFuncCounter++;
+        ret = hashFuncCounter%N;
+        hashFuncCounter = ret;
         return ret;    
     }
 
@@ -62,7 +60,7 @@ public:
             curr = NULL;
             lastToken = NULL; // eta lagar kotha
             //cout<<i<<" , "<<j<<"\n";
-            pos1 = i; pos2 = j;
+            scopeTablePos1 = i; scopeTablePos2 = j;
             return true;    
         }
         catch(exception& x){
@@ -89,7 +87,7 @@ public:
             curr = NULL;
             lastToken = NULL; // eta lagar kotha 
             //cout<<i<<" , "<<j<<"\n";
-            pos1 = i; pos2 = j;
+            scopeTablePos1 = i; scopeTablePos2 = j;
             return true;    
          }
         catch(exception& x){
@@ -107,7 +105,7 @@ public:
         p = HashTable[i];
         int j=1;
         while(p!=NULL){
-            if(p->getTokenAttr() == tokenAttr){ pos1=0; pos2=1; return p;   }
+            if(p->getTokenAttr() == tokenAttr){ scopeTablePos1=0; scopeTablePos2=1; return p;   }
             p = p->Next;
             j++;
         }    
@@ -126,7 +124,7 @@ public:
         curr->Next = p->Next;
         p->Next = NULL;
         delete p;
-        pos1=i; pos2=j;
+        scopeTablePos1=i; scopeTablePos2=j;
         return true;
 
     }
