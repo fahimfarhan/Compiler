@@ -61,7 +61,7 @@ void testDrivenDevelopment(){
     symbolTable->Insert(*token2);
     cout<<"ok2\n";
     token2 = NULL;
-    cout<<"Inserted in ScopeTable# "<<globalSopeNum<<" at position "<<pos1<<" , "<<pos2<<"\n";
+    cout<<"Inserted in ScopeTable# "<<globalSopeNum<<" at position "<<scopeTablePos1<<" , "<<scopeTablePos2<<"\n";
     
 }
 
@@ -84,14 +84,14 @@ void compilerPart1(){
                 
                 symbolTable->Insert(*token);
                 token = NULL;
-                cout<<"Inserted in ScopeTable# "<<globalSopeNum<<" at position "<<pos1<<" , "<<pos2<<"\n\n";
+                cout<<"Inserted in ScopeTable# "<<globalSopeNum<<" at position "<<scopeTablePos1<<" , "<<scopeTablePos2<<"\n\n";
                 break;
             }
             case 'L':{
                 cin>>s1;
                 cout<<ch<<" "<<s1<<"\n";
                 if(symbolTable->LookUp(s1)!=NULL){
-                    cout<<"Found in ScopeTable# "<<globalSopeNum<<" at position "<<pos1<<" , "<<pos2<<"\n\n";
+                    cout<<"Found in ScopeTable# "<<globalSopeNum<<" at position "<<scopeTablePos1<<" , "<<scopeTablePos2<<"\n\n";
                 }
                 break;
             }
@@ -99,7 +99,7 @@ void compilerPart1(){
                 cin>>s1;
                 cout<<ch<<" "<<s1<<"\n";
                 if(symbolTable->Remove(s1)){
-                    cout<<"Deleted ScopeTable# "<<globalSopeNum<<" at position "<<pos1<<" , "<<pos2<<"\n\n";
+                    cout<<"Deleted ScopeTable# "<<globalSopeNum<<" at position "<<scopeTablePos1<<" , "<<scopeTablePos2<<"\n\n";
                 }else{
                     cout<<"Not Found\n\n";
                 }
@@ -132,6 +132,8 @@ void compilerPart1(){
                 
         }
     }
+
+    if(!symbolTable){   delete symbolTable; }
 }
 
 int main(){

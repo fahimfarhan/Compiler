@@ -6,8 +6,7 @@
 /* contents of the header file */
     #include <bits/stdc++.h>
     using namespace std;
-
-    int pos1, pos2;
+    int scopeTablePos1, scopeTablePos2;
 #endif
 
 
@@ -90,5 +89,7 @@ public:
         }
     }
 
-    ~SymbolTable(){     while(curr!=root){  ExitScope();    }   }
+    void destroySymbolTable(){  while(curr!=root){  ExitScope();    }   }
+
+    ~SymbolTable(){    destroySymbolTable();    }
 };

@@ -7,7 +7,7 @@
     #include <bits/stdc++.h>
     using namespace std;
 
-    int pos1, pos2;
+    int scopeTablePos1, scopeTablePos2;
 #endif
 
 class Token{

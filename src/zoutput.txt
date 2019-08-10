@@ -1,13 +1,18 @@
 I foo FUNCTION
 Inserted in ScopeTable# 1 at position 2 , 1
+
 I i VAR
 Inserted in ScopeTable# 1 at position 0 , 1
+
 L foo
 Found in ScopeTable# 1 at position 0 , 1
+
 L j
 I 5 NUMBER
 Inserted in ScopeTable# 1 at position 4 , 1
+
 P A
+
  ScopeTable # 1
 0 -->  < VAR : i > 
 1 --> 
@@ -18,9 +23,12 @@ P A
 6 --> 
 D j
 Not Found
+
 D i
 Deleted ScopeTable# 1 at position 0 , 1
+
 P A
+
  ScopeTable # 1
 0 --> 
 1 --> 
@@ -31,12 +39,17 @@ P A
 6 --> 
 S 
 
+
 New ScopeTable with id 2 created
+
 I <= RELOP
 Inserted in ScopeTable# 2 at position 2 , 1
+
 I == RELOP
 Inserted in ScopeTable# 2 at position 3 , 1
+
 P A
+
  ScopeTable # 2
 0 --> 
 1 --> 
@@ -55,11 +68,15 @@ P A
 6 --> 
 I <= RELOP
 Inserted in ScopeTable# 2 at position 2 , 2
+
 I foo FUNCTION
 Inserted in ScopeTable# 2 at position 2 , 3
+
 D ==
 Deleted ScopeTable# 2 at position 3 , 1
+
 P A
+
  ScopeTable # 2
 0 --> 
 1 --> 
@@ -77,12 +94,17 @@ P A
 5 --> 
 6 --> 
 E 
+
 ScopeTable with id 2 removed
+
 I t t
 Inserted in ScopeTable# 1 at position 4 , 2
+
 I k k
 Inserted in ScopeTable# 1 at position 2 , 2
+
 P A
+
  ScopeTable # 1
 0 --> 
 1 --> 
