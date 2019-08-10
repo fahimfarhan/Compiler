@@ -1,7 +1,5 @@
-Line No. 0: Token <STRING> Lexeme "asdf" found
-Line No. 2: Token <STRING> Lexeme "qwert\
-poiuy\
-zxcvb" found
+Line No. 0 : Error No. 1: Unknown Character/Others Error #
+Line No. 1 : Error No. 2: Unknown Character/Others Error $
 Line No. 6: Token <INT> Lexeme int found
 Line No. 6: Token <IDENTIFIER> Lexeme main found
 Line No. 6: Token <LPAREN> Lexeme ( found

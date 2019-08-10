@@ -3,4 +3,4 @@ rm lex.yy.c
 
 flex lexer.l 
 g++ lex.yy.c
-./a.out zinput1.txt ztokenout.txt
+./a.out zinput.txt ztokenout.txt

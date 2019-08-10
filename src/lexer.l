@@ -71,7 +71,11 @@ NEWLINE [\n]
 WHITESPACE [ \t\v\f\r]+
 
 digit [0-9]
+digits {digit}+
+
 letter [A-Za-z]
+letters {letter}+
+
 CONST_INT {digit}+
 
 CONST_FLOAT1 {CONST_INT}(\.{CONST_INT})?(E[+-]?{CONST_INT})?
@@ -104,6 +108,21 @@ SINGLE_LINE_STR \"({stringContent})\"
 MULTI_LINE_STR \"({stringContent}\\\n)+\"
 
 STRING \"(([^\"\n])|(\\\n))*\"
+
+TOO_MANY_DOTS ({CONST_INT}?\.{CONST_INT}?)+
+
+CONST_FLOAT1ill {CONST_INT}(\.{CONST_INT})?(E[+-]?{CONST_FLOAT})?
+CONST_FLOAT2ill {CONST_INT}?\.{CONST_INT}(E[+-]?{CONST_FLOAT})?
+
+ILL_FORMED_FLOAT {CONST_FLOAT1ill}|{CONST_FLOAT2ill}
+
+MultiCharacterConstantError '{IDENTIFIER}'
+
+UnfinishedChar          '{letter}|'{digit}|'{backslash}'|'{backslash}{backslash}
+
+UnfinishedString  \"(([^\"\n])|(\\\n))*
+
+commentEnd [*][/]
 
 %%
 
@@ -248,8 +267,44 @@ STRING \"(([^\"\n])|(\\\n))*\"
 {WHITESPACE}    {                       }
 {NEWLINE}       {   lineCount++;        }
 
+{TOO_MANY_DOTS} {
+                    errorCount++;
+                    logout<<"Line No. "<<lineCount<<" : Error No. "<<errorCount<<": Too many dots in "<<yytext<<"\n"; 
+                }
 
+{ILL_FORMED_FLOAT}  {       
+                    errorCount++;
+                    logout<<"Line No. "<<lineCount<<" : Error No. "<<errorCount<<": Ill formed float "<<yytext<<"\n"; 
+                    }
 
+{MultiCharacterConstantError}   {
+                                errorCount++;
+                    logout<<"Line No. "<<lineCount<<" : Error No. "<<errorCount<<": Multi Character Constant Error "<<yytext<<"\n"; 
+                                
+                                }
+
+{UnfinishedChar}    {
+                    errorCount++;
+                    logout<<"Line No. "<<lineCount<<" : Error No. "<<errorCount<<": Unfinished Character Error "<<yytext<<"\n"; 
+                    }
+
+{UnfinishedString}  {
+                    errorCount++;
+                    logout<<"Line No. "<<lineCount<<" : Error No. "<<errorCount<<": Unfinished String Error "<<yytext<<"\n"; 
+                    }
+
+[/][*][^*]*[*]+([^*/])*    {
+                    // failed 
+                    errorCount++;
+                    logout<<"Line No. "<<lineCount<<" : Error No. "<<errorCount<<": Unfinished Comment Error "<<yytext<<"\n"; 
+                    
+
+                    }
+.                   {
+                        errorCount++;
+                        logout<<"Line No. "<<lineCount<<" : Error No. "<<errorCount<<": Unknown Character/Others Error "<<yytext<<"\n"; 
+                    
+                    }
 
 %%
 

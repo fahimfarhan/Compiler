@@ -1,7 +1,3 @@
-< STRING , "asdf" >
-< STRING , "qwert\
-poiuy\
-zxcvb" >
 <INT>
 < IDENTIFIER , main >
 < LPAREN , ( >
