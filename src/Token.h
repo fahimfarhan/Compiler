@@ -14,17 +14,20 @@ class Token{
 private:
     string TokenName, TokenAttr;
 public:
+    string value;
     Token *Next;
 
     Token(){
         TokenName = "";
         TokenAttr = "";
+        value = "";
         Next = NULL;
     }
 
     Token(Token& t){
         TokenName = t.getTokenName();
         TokenAttr = t.getTokenAttr();
+        value = t.value;
         Next = t.Next;
     }
 
