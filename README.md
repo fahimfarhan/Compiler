@@ -37,5 +37,6 @@ $ flex lexer.l
 $ g++ lex.yy.c
 $ ./a.out zinput.txt ztokenout.txt
 ```
-
+3. Compiler3:
+Start with easy stuffs, add more stuffs as you advance. For example, I started from the demo simple calculator. First I added the file I/O. Once everything was working, I moved on forward. Make sure you keep a backup / checkpoint after each successful changes, else you are in a big trouble!
 

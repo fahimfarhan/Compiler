@@ -7,6 +7,10 @@
     #include "myHeader.h"
 #endif
 
+#define YYSTYPE Token *
+extern SymbolTable *table;
+void yyerror(char *);
+
 #include "y.tab.h"
 
 int LineNo=0, ErrorCount=0;
@@ -21,15 +25,37 @@ NUMBER [-]?{DIGIT}+(\.{DIGIT}+)?
 %%
 
 {NUMBER}  {
-  sscanf(yytext,"%lf", &yylval);
-	     return NUMBER;
+      //sscanf(yytext,"%lf", &yylval);
+	    string s = yytext;
+      Token *token = new Token;
+        token->setTokenName("NUMBER");
+        token->setTokenAttr(s);
+        token->setValue();
+
+        yylval = (YYSTYPE)token;
+
+      return NUMBER;
 	  }
-"+"       { return PLUS; }
-"-"       { return MINUS; }
-"/"       { return SLASH; }
-"*"       { return ASTERISK; }
-"("       { return LPAREN; }
-")"       { return RPAREN; }
+"+" |
+"-"         {   string s = yytext;
+                Token *token = new Token;
+                token->setTokenName("ADDOP");
+                token->setTokenAttr(s);
+                yylval = (YYSTYPE)token;
+                return ADDOP; 
+            }
+"/"  |
+"*"       { string s = yytext;
+            Token *token = new Token;
+            token->setTokenName("MULOP");
+            token->setTokenAttr(s);
+            yylval = (YYSTYPE)token;
+            return MULOP; 
+          }
+"("       {     return LPAREN; }
+")"       { 
+                return RPAREN; 
+            }
 "\n"      { return NEWLINE; }
 .       { /* No action and no return */}
 %%

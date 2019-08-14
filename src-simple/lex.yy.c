@@ -454,12 +454,16 @@ char *yytext;
     #include "myHeader.h"
 #endif
 
+#define YYSTYPE Token *
+extern SymbolTable *table;
+void yyerror(char *);
+
 #include "y.tab.h"
 
 int LineNo=0, ErrorCount=0;
 
-#line 462 "lex.yy.c"
-#line 463 "lex.yy.c"
+#line 466 "lex.yy.c"
+#line 467 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -676,10 +680,10 @@ YY_DECL
 		}
 
 	{
-#line 21 "scanner.l"
+#line 25 "scanner.l"
 
 
-#line 683 "lex.yy.c"
+#line 687 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -738,59 +742,75 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 23 "scanner.l"
+#line 27 "scanner.l"
 {
-  sscanf(yytext,"%lf", &yylval);
-	     return NUMBER;
+      //sscanf(yytext,"%lf", &yylval);
+	    string s = yytext;
+      Token *token = new Token;
+        token->setTokenName("NUMBER");
+        token->setTokenAttr(s);
+        token->setValue();
+
+        yylval = (YYSTYPE)token;
+
+      return NUMBER;
 	  }
 	YY_BREAK
 case 2:
-YY_RULE_SETUP
-#line 27 "scanner.l"
-{ return PLUS; }
-	YY_BREAK
+#line 40 "scanner.l"
 case 3:
 YY_RULE_SETUP
-#line 28 "scanner.l"
-{ return MINUS; }
+#line 40 "scanner.l"
+{   string s = yytext;
+                Token *token = new Token;
+                token->setTokenName("ADDOP");
+                token->setTokenAttr(s);
+                yylval = (YYSTYPE)token;
+                return ADDOP; 
+            }
 	YY_BREAK
 case 4:
-YY_RULE_SETUP
-#line 29 "scanner.l"
-{ return SLASH; }
-	YY_BREAK
+#line 48 "scanner.l"
 case 5:
 YY_RULE_SETUP
-#line 30 "scanner.l"
-{ return ASTERISK; }
+#line 48 "scanner.l"
+{ string s = yytext;
+            Token *token = new Token;
+            token->setTokenName("MULOP");
+            token->setTokenAttr(s);
+            yylval = (YYSTYPE)token;
+            return MULOP; 
+          }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 31 "scanner.l"
-{ return LPAREN; }
+#line 55 "scanner.l"
+{     return LPAREN; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 32 "scanner.l"
-{ return RPAREN; }
+#line 56 "scanner.l"
+{ 
+                return RPAREN; 
+            }
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 33 "scanner.l"
+#line 59 "scanner.l"
 { return NEWLINE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 34 "scanner.l"
+#line 60 "scanner.l"
 { /* No action and no return */}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 35 "scanner.l"
+#line 61 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 794 "lex.yy.c"
+#line 814 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1795,5 +1815,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 35 "scanner.l"
+#line 61 "scanner.l"
 

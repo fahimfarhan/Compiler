@@ -47,23 +47,19 @@ extern int yydebug;
   {
     NEWLINE = 258,
     NUMBER = 259,
-    PLUS = 260,
-    MINUS = 261,
-    SLASH = 262,
-    ASTERISK = 263,
-    LPAREN = 264,
-    RPAREN = 265
+    ADDOP = 260,
+    MULOP = 261,
+    LPAREN = 262,
+    RPAREN = 263
   };
 #endif
 /* Tokens.  */
 #define NEWLINE 258
 #define NUMBER 259
-#define PLUS 260
-#define MINUS 261
-#define SLASH 262
-#define ASTERISK 263
-#define LPAREN 264
-#define RPAREN 265
+#define ADDOP 260
+#define MULOP 261
+#define LPAREN 262
+#define RPAREN 263
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

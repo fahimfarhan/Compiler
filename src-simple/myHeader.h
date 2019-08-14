@@ -7,24 +7,43 @@
 
 using namespace std;
 
+
+//template <typename T>
+
+
+
 class Token{
 private:
     string TokenName, TokenAttr;
 public:
-    string value; // pore add kora hoise
+    double value;
+    int ival;
+    char cval;
+    float fval;
+    string sval;
+
     Token *Next;
     
     Token(){
         TokenName = "";
         TokenAttr = "";
-        value = "";
+        
         Next = NULL;
+    }
+
+    void setValue(){
+        value = stod(TokenAttr);
+        // ival = stoi(TokenAttr);
     }
 
     Token(Token& t){
         TokenName = t.getTokenName();
         TokenAttr = t.getTokenAttr();
-        value = t.value;
+        ival = t.ival;
+        cval = t.cval;
+        fval = t.fval;
+        sval = t.sval;
+
         Next = t.Next;
     }
 
@@ -35,6 +54,7 @@ public:
     void setTokenName(const string& name){ TokenName = name;    }
     void setTokenAttr(const string& attr){ TokenAttr = attr;   }
     
+
     // destructor
     ~Token(){
         Next = NULL;
@@ -202,7 +222,7 @@ private:
     ScopeTable *root, *curr;
     int N;
 public:
-    static int globalSopeNum;
+    //static int Global::globalScopeNum;
     SymbolTable(int n=7){  N = n;    root = NULL; curr = root;    } 
     void EnterScope(){
         ScopeTable *temp = new ScopeTable(N);
@@ -212,11 +232,11 @@ public:
 
         if(curr->Parent == root){   curr->id = 1;   }
         else{   curr->id = curr->Parent->id+1;    }
-        globalSopeNum=curr->id;
+        //Global::globalScopeNum=curr->id;
     }
 
     void ExitScope(){
-        globalSopeNum=curr->id;
+        //Global::globalScopeNum=curr->id;
         ScopeTable *temp;
         temp = curr;
         curr = curr->Parent;
@@ -226,11 +246,11 @@ public:
 
     bool Insert(Token& token){   
         //cout<<"Inserted in ScopeTable# "<<(curr->id)<<" at position \n";   
-        globalSopeNum=curr->id; return curr->Insert(token);     
+        //Global::globalScopeNum=curr->id; return curr->Insert(token);     
     }
 
     bool Remove(string& tokenAttr){  
-        globalSopeNum=curr->id;
+        //Global::globalScopeNum=curr->id;
         return curr->Delete(tokenAttr);
     }
     
@@ -243,7 +263,7 @@ public:
         while(temp!=root){
             ret = temp->LookUp(tokenAttr);
             if(ret!=NULL){       
-                globalSopeNum=curr->id; //cout<<"Found in ScopeTable# "<<(curr->id)<<" at position \n";
+                //Global::globalScopeNum=curr->id; //cout<<"Found in ScopeTable# "<<(curr->id)<<" at position \n";
                 return ret;     
             }
             temp = temp->Parent;
