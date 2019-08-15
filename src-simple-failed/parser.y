@@ -10,6 +10,8 @@
 extern FILE *yyin;
 extern int LineNo;
 extern int ErrorCount;
+extern char *yytext;
+
 
 FILE *fin;
 FILE *logfile;
@@ -20,7 +22,7 @@ SymbolTable *table;
 
 void yyerror(const char *s){
 	ErrorCount++;
-	fprintf(errorfile, "Error at Line %d: %s\n", LineNo, s);
+	fprintf(errorfile, "yyerror Error at Line %d: %s\n", LineNo, s);
 
 }
 
@@ -48,7 +50,6 @@ Token *token;
 
 %}
 
-
 %token IF ELSE FOR WHILE DO BREAK INT CHAR FLOAT DOUBLE VOID RETURN 
 %token SWITCH CASE DEFAULT CONTINUE NEWLINE WHITESPACE 
 %token CONST_INT CONST_FLOAT SPECIAL_CONST_CHAR CONST_CHAR
@@ -58,23 +59,55 @@ Token *token;
 %token ADDOP MULOP LPAREN RPAREN INCOP ASSIGNOP LOGICOP NOT LCURL RCURL LTHIRD RTHIRD 
 %token COMMA SEMICOLON 
 
+
+
 %%
 input:              /* empty string */
     | input line
     ;
 line: NEWLINE
-    | expr NEWLINE          { 
+    | factor NEWLINE          { 
                                 fprintf(logfile,"\t%.10g\n",$1->value);
                                 //if($1->getTokenAttr()=="double"){fprintf(logfile,"\t%.10g\n",$1->value);} 
                                 //else{fprintf(logfile,"\t%d\n",$1->value);}        
                             }
     ;
+
+
+factor: CONST_INT             { $1->setValue(); $$ = $1;      }  
+      | CONST_FLOAT            { $1->setValue(); $$ = $1;      } 
+      ;
+%%
+            
+main()
+{
+    table = new SymbolTable;
+    table->EnterScope();
+    yyin = fopen("zin.c", "r");
+    logfile = fopen("zlog.txt", "w");
+    errorfile= fopen("zerror.txt", "w");
+    tablefile= fopen("zsymtab.txt", "w");
+
+    yyparse();
+
+    fclose(yyin);
+    fclose(logfile);
+    fclose(errorfile);
+    fclose(tablefile);
+    cout<<"ErrorCount : "<<ErrorCount<<"\n";
+    cout<<"LineCount : "<<LineNo<<"\n";
+    exit(0);
+
+}
+
+/*
+
 expr: expr ADDOP term           { 
                                     $$ = new Token;
-                                    if($3->getTokenName()=="int" && $1->getTokenName()=="int"){
-                                        $$->setTokenName("int");
+                                    if($3->getTokenName()=="CONST_INT" && $1->getTokenName()=="CONST_INT"){
+                                        $$->setTokenName("CONST_INT");
                                     }else{
-                                        $$->setTokenName("double");
+                                        $$->setTokenName("CONST_FLOAT");
                                     }
                                     if($2->getTokenAttr() == "+"){
                                         $$->value = $1->value + $3->value;
@@ -89,7 +122,7 @@ expr: expr ADDOP term           {
                                     $$ = new Token;
                                     $$->setTokenName($1->getTokenName());
                                     $$->setTokenAttr(calc(s1, sign, s2));
-                                    */
+                                    * /
                                     //$$ = $1 + $3; 
                                 }
     | term                      { $$ = $1;      }
@@ -97,11 +130,12 @@ expr: expr ADDOP term           {
 term: term MULOP factor   { 
                                     $$ = new Token;
                                     $$ = new Token;
-                                    if($3->getTokenName()=="int" && $1->getTokenName()=="int"){
-                                        $$->setTokenName("int");
+                                    if($3->getTokenName()=="CONST_INT" && $1->getTokenName()=="CONST_INT"){
+                                        $$->setTokenName("CONST_INT");
                                     }else{
-                                        $$->setTokenName("double");
+                                        $$->setTokenName("CONST_FLOAT");
                                     }
+
                                     if($2->getTokenAttr() == "*"){
                                         $$->value = $1->value * $3->value;
                                     }else if($2->getTokenAttr() == "/"){
@@ -115,52 +149,10 @@ term: term MULOP factor   {
 
                                     $$ = new Token;
                                     $$->setTokenName($1->getTokenName());
-                                    $$->setTokenAttr(calc(s1, sign, s2));*/
+                                    $$->setTokenAttr(calc(s1, sign, s2));* /
                                      //    $$ = $1 * $3; 
                             }
     | factor                { $$ = $1;      }
     ;
-factor:  LPAREN expr RPAREN  { $$ = $2; }
-      | CONST_INT        { 
-                                table->Insert(*$1);
-                                $$ = $1;
-                           }
-      
-      | CONST_FLOAT        { 
-                                table->Insert(*$1);
-                                $$ = $1;
-                           }
-      | CONST_CHAR        { 
-                                table->Insert(*$1);
-                                $$ = $1;
-                           }
-      | SPECIAL_CONST_CHAR        { 
-                                table->Insert(*$1);
-                                $$ = $1;
-                           }
-      ;
-%%
-            
-main()
-{
-    table = new SymbolTable;
-    table->EnterScope();
-    yyin = fopen("zin.c", "r");
-    logfile = fopen("zlog.txt", "w");
-    errorfile= fopen("zerror.txt", "w");
-    //tablefile= fopen("zsymtab.txt", "w");
-    freopen("zsymtab.txt","w",stdout);
-    
 
-    yyparse();
-
-    table->PrintAllScopeTable();
-
-    fclose(yyin);
-    fclose(logfile);
-    fclose(errorfile);
-    // fclose(tablefile);
-
-    exit(0);
-
-}
+*/

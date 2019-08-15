@@ -45,101 +45,21 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    IF = 258,
-    ELSE = 259,
-    FOR = 260,
-    WHILE = 261,
-    DO = 262,
-    BREAK = 263,
-    INT = 264,
-    CHAR = 265,
-    FLOAT = 266,
-    DOUBLE = 267,
-    VOID = 268,
-    RETURN = 269,
-    SWITCH = 270,
-    CASE = 271,
-    DEFAULT = 272,
-    CONTINUE = 273,
-    NEWLINE = 274,
-    WHITESPACE = 275,
-    CONST_INT = 276,
-    CONST_FLOAT = 277,
-    SPECIAL_CONST_CHAR = 278,
-    CONST_CHAR = 279,
-    RELOP = 280,
-    ID = 281,
-    STRING = 282,
-    TOO_MANY_DOTS = 283,
-    OTHERS_DOT = 284,
-    ILL_FORMED_FLOAT = 285,
-    UnfinishedChar = 286,
-    MultiCharacterConstantError = 287,
-    UnfinishedString = 288,
-    UnfinishedComment = 289,
-    ADDOP = 290,
-    MULOP = 291,
-    LPAREN = 292,
-    RPAREN = 293,
-    INCOP = 294,
-    ASSIGNOP = 295,
-    LOGICOP = 296,
-    NOT = 297,
-    LCURL = 298,
-    RCURL = 299,
-    LTHIRD = 300,
-    RTHIRD = 301,
-    COMMA = 302,
-    SEMICOLON = 303
+    NEWLINE = 258,
+    NUMBER = 259,
+    ADDOP = 260,
+    MULOP = 261,
+    LPAREN = 262,
+    RPAREN = 263
   };
 #endif
 /* Tokens.  */
-#define IF 258
-#define ELSE 259
-#define FOR 260
-#define WHILE 261
-#define DO 262
-#define BREAK 263
-#define INT 264
-#define CHAR 265
-#define FLOAT 266
-#define DOUBLE 267
-#define VOID 268
-#define RETURN 269
-#define SWITCH 270
-#define CASE 271
-#define DEFAULT 272
-#define CONTINUE 273
-#define NEWLINE 274
-#define WHITESPACE 275
-#define CONST_INT 276
-#define CONST_FLOAT 277
-#define SPECIAL_CONST_CHAR 278
-#define CONST_CHAR 279
-#define RELOP 280
-#define ID 281
-#define STRING 282
-#define TOO_MANY_DOTS 283
-#define OTHERS_DOT 284
-#define ILL_FORMED_FLOAT 285
-#define UnfinishedChar 286
-#define MultiCharacterConstantError 287
-#define UnfinishedString 288
-#define UnfinishedComment 289
-#define ADDOP 290
-#define MULOP 291
-#define LPAREN 292
-#define RPAREN 293
-#define INCOP 294
-#define ASSIGNOP 295
-#define LOGICOP 296
-#define NOT 297
-#define LCURL 298
-#define RCURL 299
-#define LTHIRD 300
-#define RTHIRD 301
-#define COMMA 302
-#define SEMICOLON 303
+#define NEWLINE 258
+#define NUMBER 259
+#define ADDOP 260
+#define MULOP 261
+#define LPAREN 262
+#define RPAREN 263
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

@@ -32,11 +32,9 @@ public:
     }
 
     void setValue(){
-        try{
-                value = stod(TokenAttr);
-        }catch(exception& x){
-            cerr<<x.what()<<"\n";
-        }
+            if(TokenName == "CONST_INT"){   value = stoi(TokenAttr);    }
+            else if(TokenName == "CONST_FLOAT"){   value = stod(TokenAttr);    }
+            else{   }
         
         // ival = stoi(TokenAttr);
     }
@@ -78,7 +76,7 @@ private:
     int N;
     Token **HashTable;
 public:
-    //static int scopeTablePos1, scopeTablePos2;
+    static int scopeTablePos1, scopeTablePos2;
     int id;
     ScopeTable *Parent;
 
@@ -116,7 +114,7 @@ public:
             curr = NULL;
             lastToken = NULL; // eta lagar kotha
             //cout<<i<<" , "<<j<<"\n";
-            //scopeTablePos1 = i; scopeTablePos2 = j;
+            scopeTablePos1 = i; scopeTablePos2 = j;
             return true;    
         }
         catch(exception& x){
@@ -143,7 +141,7 @@ public:
             curr = NULL;
             lastToken = NULL; // eta lagar kotha 
             //cout<<i<<" , "<<j<<"\n";
-            //scopeTablePos1 = i; scopeTablePos2 = j;
+            scopeTablePos1 = i; scopeTablePos2 = j;
             return true;    
          }
         catch(exception& x){
@@ -161,7 +159,7 @@ public:
         p = HashTable[i];
         int j=1;
         while(p!=NULL){
-            if(p->getTokenAttr() == tokenAttr){ /*scopeTablePos1=0; scopeTablePos2=1;*/ return p;   }
+            if(p->getTokenAttr() == tokenAttr){ scopeTablePos1=0; scopeTablePos2=1; return p;   }
             p = p->Next;
             j++;
         }    
@@ -180,7 +178,7 @@ public:
         curr->Next = p->Next;
         p->Next = NULL;
         delete p;
-        //scopeTablePos1=i; scopeTablePos2=j;
+        scopeTablePos1=i; scopeTablePos2=j;
         return true;
 
     }
@@ -251,8 +249,7 @@ public:
 
     bool Insert(Token& token){   
         //cout<<"Inserted in ScopeTable# "<<(curr->id)<<" at position \n";   
-        //Global::globalScopeNum=curr->id; 
-        return curr->Insert(token);     
+        //Global::globalScopeNum=curr->id; return curr->Insert(token);     
     }
 
     bool Remove(string& tokenAttr){  

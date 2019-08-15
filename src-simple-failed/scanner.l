@@ -14,7 +14,7 @@ void yyerror(char *);
 #include "y.tab.h"
 
 int LineNo=0, ErrorCount=0;
-
+extern  FILE *errorfile;
 
 void defaultDo(string in){
   string s = yytext;
@@ -34,9 +34,14 @@ void opPunch(string in){
   yylval = (YYSTYPE)token;
 }
 
+/*
 
+WS [ \t]+
+DIGIT [0-9]
+NUMBER [-]?{DIGIT}+(\.{DIGIT}+)?
+
+*/
 %}
-
 
 NEWLINE [\n]
 WHITESPACE [ \t\v\f\r]+
@@ -48,8 +53,6 @@ letter [A-Za-z]
 letters {letter}+
 
 CONST_INT {digit}+
-
-CONST_FLOAT_temp [-]?{digit}+(\.{digit}+)?
 
 CONST_FLOAT1 {CONST_INT}(\.{CONST_INT})?(E[+-]?{CONST_INT})?
 CONST_FLOAT2 {CONST_INT}?\.{CONST_INT}(E[+-]?{CONST_INT})?
@@ -97,6 +100,9 @@ UnfinishedChar          '{letter}|'{digit}|'{backslash}'|'{backslash}{backslash}
 
 UnfinishedString  \"(([^\"\n])|(\\\n))*
 
+commentEnd [*][/]
+
+
 
 %%
 
@@ -119,7 +125,6 @@ UnfinishedString  \"(([^\"\n])|(\\\n))*
 
 
 {CONST_INT}  {
-      //sscanf(yytext,"%lf", &yylval);
 	    string s = yytext;
       Token *token = new Token;
         token->setTokenName("CONST_INT");
@@ -132,7 +137,6 @@ UnfinishedString  \"(([^\"\n])|(\\\n))*
 	  }
 
 {CONST_FLOAT}  {
-      //sscanf(yytext,"%lf", &yylval);
 	    string s = yytext;
       Token *token = new Token;
         token->setTokenName("CONST_FLOAT");
@@ -142,18 +146,6 @@ UnfinishedString  \"(([^\"\n])|(\\\n))*
         yylval = (YYSTYPE)token;
 
       return CONST_FLOAT;
-	  }
-
-{CONST_CHAR}  {
-	    string s = yytext;
-      Token *token = new Token;
-        token->setTokenName("CONST_CHAR");
-        token->setTokenAttr(s);
-        token->setValue();
-
-        yylval = (YYSTYPE)token;
-
-      return CONST_CHAR;
 	  }
 
 {SPECIAL_CONST_CHAR}  {
@@ -173,7 +165,7 @@ UnfinishedString  \"(([^\"\n])|(\\\n))*
         case '0': { detectedChar='\0';  break;  }
         default:{   break;  }
         
-      }
+    }
 	    string temp = ""; temp+=detectedChar;
         Token *token = new Token;
         token->setTokenName("SPECIAL_CONST_CHAR");
@@ -185,30 +177,37 @@ UnfinishedString  \"(([^\"\n])|(\\\n))*
       return SPECIAL_CONST_CHAR;
 	  }
 
-  
+{CONST_CHAR}  {
+	    string s = yytext;
+      Token *token = new Token;
+        token->setTokenName("CONST_CHAR");
+        token->setTokenAttr(s);
+        token->setValue();
+
+        yylval = (YYSTYPE)token;
+
+      return CONST_CHAR;
+	  }
+
 "+" |
-"-"         {   string s = yytext;
-                Token *token = new Token;
-                token->setTokenName("ADDOP");
-                token->setTokenAttr(s);
-                yylval = (YYSTYPE)token;
-                return ADDOP; 
-            }
-"/"  |
-"*"  |
-"%"     { string s = yytext;
-            Token *token = new Token;
-            token->setTokenName("MULOP");
-            token->setTokenAttr(s);
-            yylval = (YYSTYPE)token;
-            return MULOP; 
-          }
+"-"    {
+            opPunch("ADDOP");
+            return ADDOP;
+        }
+
+"*" |
+"/" |
+"%"   {
+            opPunch("MULOP");
+            return MULOP;
+        }
 
 "++"  |
 "--"    {
             // opPunch("INCOP");
             return INCOP;
         }
+
 
 {RELOP}  {
             opPunch("RELOP");
@@ -231,10 +230,146 @@ UnfinishedString  \"(([^\"\n])|(\\\n))*
             return NOT;
         }
 
+"("      {
+            opPunch("LPAREN");
+            return LPAREN;
+        }
+
+")"      {
+            opPunch("RPAREN");
+            return RPAREN;
+        }
+
+"{"      {
+            opPunch("LCURL");
+            return LCURL;
+        }
+
+
+"}"      {
+            opPunch("RCURL");
+            return RCURL;
+        }
+
+"["      {
+            opPunch("LTHIRD");
+            return LTHIRD;
+        }
+
+"]"      {
+            opPunch("RTHIRD");
+            return RTHIRD;
+        }
+
+","      {
+            opPunch("COMMA");
+            return COMMA;
+        }
+
+";"      {
+            opPunch("SEMICOLON");
+            return SEMICOLON;
+        }
+
+{IDENTIFIER}  {
+                  defaultDo("ID");
+                  return ID;
+              } 
+
+{STRING}      {
+                  defaultDo("STRING");
+                  return STRING;
+            }
+
+"//".*                                    { /* DO NOTHING */  } 
+[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { /* DO NOTHING */  }
+
+{WHITESPACE}    {  /* DO NOTHING */  }
+{NEWLINE}       {   LineNo++;        }
+
+
+{TOO_MANY_DOTS} {
+                    ErrorCount++;
+                    fprintf(errorfile, "Error at Line %d: %s\n", LineNo, yytext);
+                    return TOO_MANY_DOTS;
+                }
+
+{ILL_FORMED_FLOAT}  {       
+                    ErrorCount++;
+                    fprintf(errorfile, "Error at Line %d: %s\n", LineNo, yytext);
+                    return ILL_FORMED_FLOAT;
+                    }
+
+{MultiCharacterConstantError}   {
+                                ErrorCount++;
+                                fprintf(errorfile, "Error at Line %d: %s\n", LineNo, yytext);            
+                                 return MultiCharacterConstantError; 
+                                }
+
+{UnfinishedChar}    {
+                    ErrorCount++;
+                    fprintf(errorfile, "Error at Line %d: %s\n", LineNo, yytext);
+                      return UnfinishedChar;
+                    }
+
+{UnfinishedString}  {
+                      ErrorCount++;
+                      fprintf(errorfile, "Error at Line %d: %s\n", LineNo, yytext); 
+                      return UnfinishedString;
+
+                    }
+
+[/][*][^*]*[*]+([^*/])*    {
+                    // failed 
+                    ErrorCount++;
+                    fprintf(errorfile, "Error at Line %d: %s\n", LineNo, yytext);
+                     return UnfinishedComment; 
+                    }
+.                   {
+                        ErrorCount++;
+                        //logout<<"Line No. "<<lineCount<<" : Error No. "<<errorCount<<": Unknown Character/Others Error "<<yytext<<"\n"; 
+                        fprintf(errorfile, "Error at Line %d: %s\n", LineNo, yytext);
+                        return OTHERS_DOT;
+                    }
+
+
+
+
+%%
+
+
+/*
+{NUMBER}  {
+      //sscanf(yytext,"%lf", &yylval);
+	    string s = yytext;
+      Token *token = new Token;
+        token->setTokenName("NUMBER");
+        token->setTokenAttr(s);
+        token->setValue();
+
+        yylval = (YYSTYPE)token;
+
+      return NUMBER;
+	  }
+"+" |
+"-"         {   string s = yytext;
+                Token *token = new Token;
+                token->setTokenName("ADDOP");
+                token->setTokenAttr(s);
+                yylval = (YYSTYPE)token;
+                return ADDOP; 
+            }
+"/"  |
+"*"       { string s = yytext;
+            Token *token = new Token;
+            token->setTokenName("MULOP");
+            token->setTokenAttr(s);
+            yylval = (YYSTYPE)token;
+            return MULOP; 
+          }
 "("       {     return LPAREN; }
 ")"       { 
                 return RPAREN; 
             }
 "\n"      { return NEWLINE; }
-.       { /* No action and no return */}
-%%
+*/

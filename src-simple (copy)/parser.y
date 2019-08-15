@@ -44,19 +44,13 @@ string calc(string s1, string sign, string s2){
 Token *token;
 }
 */
-// %token NEWLINE NUMBER ADDOP MULOP LPAREN RPAREN
 
 %}
 
 
-%token IF ELSE FOR WHILE DO BREAK INT CHAR FLOAT DOUBLE VOID RETURN 
-%token SWITCH CASE DEFAULT CONTINUE NEWLINE WHITESPACE 
-%token CONST_INT CONST_FLOAT SPECIAL_CONST_CHAR CONST_CHAR
-%token RELOP ID STRING  
-%token TOO_MANY_DOTS  OTHERS_DOT 
-%token ILL_FORMED_FLOAT UnfinishedChar MultiCharacterConstantError UnfinishedString UnfinishedComment
-%token ADDOP MULOP LPAREN RPAREN INCOP ASSIGNOP LOGICOP NOT LCURL RCURL LTHIRD RTHIRD 
-%token COMMA SEMICOLON 
+
+%token NEWLINE NUMBER ADDOP MULOP LPAREN RPAREN
+
 
 %%
 input:              /* empty string */
@@ -121,23 +115,7 @@ term: term MULOP factor   {
     | factor                { $$ = $1;      }
     ;
 factor:  LPAREN expr RPAREN  { $$ = $2; }
-      | CONST_INT        { 
-                                table->Insert(*$1);
-                                $$ = $1;
-                           }
-      
-      | CONST_FLOAT        { 
-                                table->Insert(*$1);
-                                $$ = $1;
-                           }
-      | CONST_CHAR        { 
-                                table->Insert(*$1);
-                                $$ = $1;
-                           }
-      | SPECIAL_CONST_CHAR        { 
-                                table->Insert(*$1);
-                                $$ = $1;
-                           }
+      | NUMBER              { $$ = $1;      }
       ;
 %%
             
@@ -148,18 +126,14 @@ main()
     yyin = fopen("zin.c", "r");
     logfile = fopen("zlog.txt", "w");
     errorfile= fopen("zerror.txt", "w");
-    //tablefile= fopen("zsymtab.txt", "w");
-    freopen("zsymtab.txt","w",stdout);
-    
+    tablefile= fopen("zsymtab.txt", "w");
 
     yyparse();
-
-    table->PrintAllScopeTable();
 
     fclose(yyin);
     fclose(logfile);
     fclose(errorfile);
-    // fclose(tablefile);
+    fclose(tablefile);
 
     exit(0);
 

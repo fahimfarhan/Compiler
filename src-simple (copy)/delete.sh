@@ -1,0 +1,9 @@
+rm y.tab.c
+rm y.tab.h
+rm parser.out
+rm lex.yy.c
+rm scanner.out
+rm compiler.out
+rm zerror.txt
+rm zlog.txt
+rm zsymtab.txt

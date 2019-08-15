@@ -75,6 +75,8 @@
 extern FILE *yyin;
 extern int LineNo;
 extern int ErrorCount;
+extern char *yytext;
+
 
 FILE *fin;
 FILE *logfile;
@@ -85,7 +87,7 @@ SymbolTable *table;
 
 void yyerror(const char *s){
 	ErrorCount++;
-	fprintf(errorfile, "Error at Line %d: %s\n", LineNo, s);
+	fprintf(errorfile, "yyerror Error at Line %d: %s\n", LineNo, s);
 
 }
 
@@ -112,7 +114,7 @@ Token *token;
 // %token NEWLINE NUMBER ADDOP MULOP LPAREN RPAREN
 
 
-#line 116 "y.tab.c" /* yacc.c:339  */
+#line 118 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -259,7 +261,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 263 "y.tab.c" /* yacc.c:358  */
+#line 265 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -501,16 +503,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   37
+#define YYLAST   22
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  49
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  6
+#define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  14
+#define YYNRULES  7
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  20
+#define YYNSTATES  9
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -561,8 +563,7 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    62,    62,    63,    65,    66,    72,    95,    97,   121,
-     123,   124,   129,   133,   137
+       0,    65,    65,    66,    68,    69,    77,    78
 };
 #endif
 
@@ -579,8 +580,7 @@ static const char *const yytname[] =
   "UnfinishedChar", "MultiCharacterConstantError", "UnfinishedString",
   "UnfinishedComment", "ADDOP", "MULOP", "LPAREN", "RPAREN", "INCOP",
   "ASSIGNOP", "LOGICOP", "NOT", "LCURL", "RCURL", "LTHIRD", "RTHIRD",
-  "COMMA", "SEMICOLON", "$accept", "input", "line", "expr", "term",
-  "factor", YY_NULLPTR
+  "COMMA", "SEMICOLON", "$accept", "input", "line", "factor", YY_NULLPTR
 };
 #endif
 
@@ -597,10 +597,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -31
+#define YYPACT_NINF -19
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-31)))
+  (!!((Yystate) == (-19)))
 
 #define YYTABLE_NINF -1
 
@@ -611,8 +611,7 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -31,     0,   -31,   -31,   -31,   -31,   -31,   -31,   -20,   -31,
-     -10,   -29,   -31,   -30,   -31,   -20,   -20,   -31,   -29,   -31
+     -19,     0,   -19,   -19,   -19,   -19,   -19,   -18,   -19
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -620,20 +619,19 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       2,     0,     1,     4,    11,    12,    14,    13,     0,     3,
-       0,     7,     9,     0,     5,     0,     0,    10,     6,     8
+       2,     0,     1,     4,     6,     7,     3,     0,     5
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -31,   -31,   -31,    -2,    -5,    -4
+     -19,   -19,   -19,   -19
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,     9,    10,    11,    12
+      -1,     1,     6,     7
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -641,40 +639,35 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       2,     4,     5,     6,     7,    15,    13,    16,    17,    14,
-      18,     0,    19,     0,     0,     0,     0,     8,     0,     3,
-       0,     4,     5,     6,     7,    15,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     8
+       2,     8,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     3,
+       0,     4,     5
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,    21,    22,    23,    24,    35,     8,    36,    38,    19,
-      15,    -1,    16,    -1,    -1,    -1,    -1,    37,    -1,    19,
-      -1,    21,    22,    23,    24,    35,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    37
+       0,    19,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    19,
+      -1,    21,    22
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    50,     0,    19,    21,    22,    23,    24,    37,    51,
-      52,    53,    54,    52,    19,    35,    36,    38,    53,    54
+       0,    50,     0,    19,    21,    22,    51,    52,    19
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    49,    50,    50,    51,    51,    52,    52,    53,    53,
-      54,    54,    54,    54,    54
+       0,    49,    50,    50,    51,    51,    52,    52
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     0,     2,     1,     2,     3,     1,     3,     1,
-       3,     1,     1,     1,     1
+       0,     2,     0,     2,     1,     2,     1,     1
 };
 
 
@@ -1351,128 +1344,29 @@ yyreduce:
   switch (yyn)
     {
         case 5:
-#line 66 "parser.y" /* yacc.c:1646  */
+#line 69 "parser.y" /* yacc.c:1646  */
     { 
                                 fprintf(logfile,"\t%.10g\n",(yyvsp[-1])->value);
                                 //if($1->getTokenAttr()=="double"){fprintf(logfile,"\t%.10g\n",$1->value);} 
                                 //else{fprintf(logfile,"\t%d\n",$1->value);}        
                             }
-#line 1361 "y.tab.c" /* yacc.c:1646  */
+#line 1354 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 72 "parser.y" /* yacc.c:1646  */
-    { 
-                                    (yyval) = new Token;
-                                    if((yyvsp[0])->getTokenName()=="int" && (yyvsp[-2])->getTokenName()=="int"){
-                                        (yyval)->setTokenName("int");
-                                    }else{
-                                        (yyval)->setTokenName("double");
-                                    }
-                                    if((yyvsp[-1])->getTokenAttr() == "+"){
-                                        (yyval)->value = (yyvsp[-2])->value + (yyvsp[0])->value;
-                                    }else if((yyvsp[-1])->getTokenAttr() == "-"){
-                                        (yyval)->value = (yyvsp[-2])->value - (yyvsp[0])->value;
-                                    }
-                                    /*
-                                    string s1 = $1->getTokenAttr(); 
-                                    string sign = $2->getTokenAttr();
-                                    string s2 = $3->getTokenAttr();
-
-                                    $$ = new Token;
-                                    $$->setTokenName($1->getTokenName());
-                                    $$->setTokenAttr(calc(s1, sign, s2));
-                                    */
-                                    //$$ = $1 + $3; 
-                                }
-#line 1389 "y.tab.c" /* yacc.c:1646  */
+#line 77 "parser.y" /* yacc.c:1646  */
+    { (yyvsp[0])->setValue(); (yyval) = (yyvsp[0]);      }
+#line 1360 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 95 "parser.y" /* yacc.c:1646  */
-    { (yyval) = (yyvsp[0]);      }
-#line 1395 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 8:
-#line 97 "parser.y" /* yacc.c:1646  */
-    { 
-                                    (yyval) = new Token;
-                                    (yyval) = new Token;
-                                    if((yyvsp[0])->getTokenName()=="int" && (yyvsp[-2])->getTokenName()=="int"){
-                                        (yyval)->setTokenName("int");
-                                    }else{
-                                        (yyval)->setTokenName("double");
-                                    }
-                                    if((yyvsp[-1])->getTokenAttr() == "*"){
-                                        (yyval)->value = (yyvsp[-2])->value * (yyvsp[0])->value;
-                                    }else if((yyvsp[-1])->getTokenAttr() == "/"){
-                                        (yyval)->value = (yyvsp[-2])->value / (yyvsp[0])->value;
-                                    }
-
-                                /*
-                                    string s1 = $1->getTokenAttr(); 
-                                    string sign = $2->getTokenAttr();
-                                    string s2 = $3->getTokenAttr();
-
-                                    $$ = new Token;
-                                    $$->setTokenName($1->getTokenName());
-                                    $$->setTokenAttr(calc(s1, sign, s2));*/
-                                     //    $$ = $1 * $3; 
-                            }
-#line 1424 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 9:
-#line 121 "parser.y" /* yacc.c:1646  */
-    { (yyval) = (yyvsp[0]);      }
-#line 1430 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 10:
-#line 123 "parser.y" /* yacc.c:1646  */
-    { (yyval) = (yyvsp[-1]); }
-#line 1436 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 11:
-#line 124 "parser.y" /* yacc.c:1646  */
-    { 
-                                table->Insert(*(yyvsp[0]));
-                                (yyval) = (yyvsp[0]);
-                           }
-#line 1445 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 12:
-#line 129 "parser.y" /* yacc.c:1646  */
-    { 
-                                table->Insert(*(yyvsp[0]));
-                                (yyval) = (yyvsp[0]);
-                           }
-#line 1454 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 13:
-#line 133 "parser.y" /* yacc.c:1646  */
-    { 
-                                table->Insert(*(yyvsp[0]));
-                                (yyval) = (yyvsp[0]);
-                           }
-#line 1463 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 14:
-#line 137 "parser.y" /* yacc.c:1646  */
-    { 
-                                table->Insert(*(yyvsp[0]));
-                                (yyval) = (yyvsp[0]);
-                           }
-#line 1472 "y.tab.c" /* yacc.c:1646  */
+#line 78 "parser.y" /* yacc.c:1646  */
+    { (yyvsp[0])->setValue(); (yyval) = (yyvsp[0]);      }
+#line 1366 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1476 "y.tab.c" /* yacc.c:1646  */
+#line 1370 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1700,7 +1594,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 142 "parser.y" /* yacc.c:1906  */
+#line 80 "parser.y" /* yacc.c:1906  */
 
             
 main()
@@ -1710,19 +1604,73 @@ main()
     yyin = fopen("zin.c", "r");
     logfile = fopen("zlog.txt", "w");
     errorfile= fopen("zerror.txt", "w");
-    //tablefile= fopen("zsymtab.txt", "w");
-    freopen("zsymtab.txt","w",stdout);
-    
+    tablefile= fopen("zsymtab.txt", "w");
 
     yyparse();
-
-    table->PrintAllScopeTable();
 
     fclose(yyin);
     fclose(logfile);
     fclose(errorfile);
-    // fclose(tablefile);
-
+    fclose(tablefile);
+    cout<<"ErrorCount : "<<ErrorCount<<"\n";
+    cout<<"LineCount : "<<LineNo<<"\n";
     exit(0);
 
 }
+
+/*
+
+expr: expr ADDOP term           { 
+                                    $$ = new Token;
+                                    if($3->getTokenName()=="CONST_INT" && $1->getTokenName()=="CONST_INT"){
+                                        $$->setTokenName("CONST_INT");
+                                    }else{
+                                        $$->setTokenName("CONST_FLOAT");
+                                    }
+                                    if($2->getTokenAttr() == "+"){
+                                        $$->value = $1->value + $3->value;
+                                    }else if($2->getTokenAttr() == "-"){
+                                        $$->value = $1->value - $3->value;
+                                    }
+                                    /*
+                                    string s1 = $1->getTokenAttr(); 
+                                    string sign = $2->getTokenAttr();
+                                    string s2 = $3->getTokenAttr();
+
+                                    $$ = new Token;
+                                    $$->setTokenName($1->getTokenName());
+                                    $$->setTokenAttr(calc(s1, sign, s2));
+                                    * /
+                                    //$$ = $1 + $3; 
+                                }
+    | term                      { $$ = $1;      }
+    ;
+term: term MULOP factor   { 
+                                    $$ = new Token;
+                                    $$ = new Token;
+                                    if($3->getTokenName()=="CONST_INT" && $1->getTokenName()=="CONST_INT"){
+                                        $$->setTokenName("CONST_INT");
+                                    }else{
+                                        $$->setTokenName("CONST_FLOAT");
+                                    }
+
+                                    if($2->getTokenAttr() == "*"){
+                                        $$->value = $1->value * $3->value;
+                                    }else if($2->getTokenAttr() == "/"){
+                                        $$->value = $1->value / $3->value;
+                                    }
+
+                                /*
+                                    string s1 = $1->getTokenAttr(); 
+                                    string sign = $2->getTokenAttr();
+                                    string s2 = $3->getTokenAttr();
+
+                                    $$ = new Token;
+                                    $$->setTokenName($1->getTokenName());
+                                    $$->setTokenAttr(calc(s1, sign, s2));* /
+                                     //    $$ = $1 * $3; 
+                            }
+    | factor                { $$ = $1;      }
+    ;
+
+*/
