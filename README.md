@@ -35,7 +35,7 @@ You can find the main codes in the following files:
 
 The branches are described below:
 
-1. Compiler1:
+## 1. Compiler1:
 
 Download command:
 ```
@@ -51,7 +51,7 @@ $ ./a.out < zinput.txt > zoutput.txt
 ```
 The commands are in a file named `1script.sh` and so you can also run it.
 
-2. Compiler2:
+## 2. Compiler2:
 
 Download command:
 ```
@@ -72,14 +72,21 @@ $ flex lexer.l
 $ g++ lex.yy.c
 $ ./a.out zinput.txt ztokenout.txt
 ```
-3. Compiler3:
+## 3. Compiler3:
+16/08, Friday: So after a whole day of trials and errors, I am stuck with this error called `segmentation fault`. This is literally what I see on the terminal:
+```
+./run.sh: line 12: 10218 Segmentation fault      (core dumped) ./compiler.out
+```
+I now kinda understand how YACC/Bison works. But I'm out of luck, energy and will power to debug where the segmentation fault is occuring. Mission abort. A summary of what I did from starting of part 3 till today is written below:
+
+Okay, this one is a bit tricky. So follow my instructions precisely:
 
 ```
 $ git clone -b Compiler3 https://github.com/fahimfarhan/Compiler.git
 ```
 
-Start with easy stuffs, add more stuffs as you advance. For example, I started from the demo simple calculator. First I added the file I/O. Once everything was working, I moved on forward. Make sure you keep a backup / checkpoint after each successful changes, else you are in a big trouble!
-This small version is in src-simple folder. Once you are comfy with the skeleton, you knw, input vs output is working without errors, proceed with the real grammar.txt file.
+Start with easy stuffs, add more stuffs as you advance. For example, I started from the demo simple calculator provided by teacchers. First I added the file I/O. Once everything was working, I moved on forward. Make sure you keep a backup / checkpoint after each successful changes, preferably using git,or else you are in a big trouble!
+This small version is in src-simple folder. Once you are comfy with the skeleton, you know, input vs output is working without errors, proceed with the real grammar.txt file.
 
 * `#define YYSTYPE Token *` Add this line to both of the flex and bison files. That will save you a lot of trouble.
 * I was having some technical problems with 3 header files, so I merged them into one `MyHeader.h`.
@@ -112,5 +119,26 @@ $ ./delete.sh   # this will delete all the generated files like lex.yy.c, y.tab.
 $ ./run.sh      # actually run 
 ```
 If ok, proceed forward. 
-Else, debug, make sure your ccode is working.
+Else, debug, make sure your code is working.
 
+* If you keep your lexical errors from Assignment 2, make sure you keep a corresponding code segment in the bison file. So if you keep,
+```
+...
+{ILL_FORMED_FLOAT}  {       
+                    ErrorCount++;
+                    fprintf(errorfile, "LexError at Line %d: %s\n", LineNo, yytext);
+                    return ILL_FORMED_FLOAT;
+                    }
+...
+```
+, 
+create a corresponding terminal in your parser.y file:
+```
+factor      :  ...
+            |  ...
+            ...
+            | ILL_FORMED_FLOAT {    /*corresponding empty body, otherwise you'll get errors, and                              waste time like a lifeless person */ }
+            |  ...
+            ;
+
+```

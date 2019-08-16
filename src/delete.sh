@@ -5,5 +5,6 @@ rm lex.yy.c
 rm scanner.out
 rm compiler.out
 rm zerror.txt
-rm zlog.txt
+# rm zlog.txt
+rm zlog.md
 rm zsymtab.txt

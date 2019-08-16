@@ -7,28 +7,37 @@
 
 using namespace std;
 
-
 //template <typename T>
 
-
-
 class Token{
-private:
-    string TokenName, TokenAttr;
 public:
+    string TokenName, TokenAttr;
     double value;
-    int ival;
-    char cval;
-    float fval;
-    string sval;
 
     Token *Next;
+    // other stuffs to assist compiler 3
+    string idtype;
+    string functionreturn;
+    vector<Token> declarationList;
+    bool isIntArray;
+    bool isFloatArray;
+    bool isArray;
+    // vetor<int> intArray;
+    int ArraySize;
+    vector<float> floatArray;
+    vector<int> intArray;
     
     Token(){
+        isArray = 0;
+        ArraySize = 0;
+        isIntArray = false;
+        isFloatArray = false;
         TokenName = "";
         TokenAttr = "";
         
         Next = NULL;
+        idtype = "";
+        functionreturn = "";
     }
 
     void setValue(){
@@ -40,7 +49,8 @@ public:
         
         // ival = stoi(TokenAttr);
     }
-
+    
+    /*
     Token(Token& t){
         TokenName = t.getTokenName();
         TokenAttr = t.getTokenAttr();
@@ -50,7 +60,7 @@ public:
         sval = t.sval;
 
         Next = t.Next;
-    }
+    } */
 
     // getter 
     string getTokenName(){  return TokenName;   }

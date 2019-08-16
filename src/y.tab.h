@@ -90,7 +90,9 @@ extern int yydebug;
     LTHIRD = 300,
     RTHIRD = 301,
     COMMA = 302,
-    SEMICOLON = 303
+    SEMICOLON = 303,
+    DECOP = 304,
+    PRINTLN = 305
   };
 #endif
 /* Tokens.  */
@@ -140,6 +142,8 @@ extern int yydebug;
 #define RTHIRD 301
 #define COMMA 302
 #define SEMICOLON 303
+#define DECOP 304
+#define PRINTLN 305
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

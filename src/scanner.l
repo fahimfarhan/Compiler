@@ -1,136 +1,318 @@
+%option noyywrap
+
 %{
-#include<iostream>
-#include<stdlib.h>
-#include<string.h>
-#include "SymbolTable.h"
-#include "SymbolInfo.h"
-#include "y.tab.h"
+#ifndef MYHEADER
+#define MYHEADER
+/* contents of the header file */
+    #include "myHeader.h"
+#endif
 
-
-using namespace std;
-
-extern YYSTYPE yylval;
+#define YYSTYPE Token *
 extern SymbolTable *table;
 void yyerror(char *);
+extern FILE *errorfile;
 
-int line_count=1;
-int error=0;
+#include "y.tab.h"
+
+int LineNo=0, ErrorCount=0;
+
+
+void defaultDo(string in){
+  string s = yytext;
+  Token *token = new Token;
+  token->setTokenName(in);
+  token->setTokenAttr(s);
+  token->setValue();
+  yylval = (YYSTYPE)token;
+}
+
+void opPunch(string in){
+  string s = yytext;
+  Token *token = new Token;
+  token->setTokenName(in);
+  token->setTokenAttr(s);
+  token->setValue();
+  yylval = (YYSTYPE)token;
+}
 
 
 %}
 
 
+NEWLINE [\n]
+WHITESPACE [ \t\v\f\r]+
 
 digit [0-9]
+digits {digit}+
+
 letter [A-Za-z]
-delim [ \t\r\f\v]
-newline \n
-ws [delim]+
-id (_|{letter})(_|{letter}|{digit})*
-integer {digit}+
-number {digit}*(\.{digit}+)?(E[+-]?{digit}+)?
-ADDOP [+-] 
-MULOP [*/%]
+letters {letter}+
 
-%%
+CONST_INT {digit}+
 
-{delim}+	{}
-{newline} {line_count++;}
+CONST_FLOAT_temp [-]?{digit}+(\.{digit}+)?
 
-"if" {return IF;}
-"else" {return ELSE;}
-"for" {return FOR;}
-"while" {return WHILE;}
-"int" {return INT;}
-"float" {return FLOAT;}
-"double" {return DOUBLE;}
-"char" {return CHAR;}
-"return" {return RETURN;}
-"void" {return VOID;}
-"main"	{return MAIN;}
-"println"	{return PRINTLN;}
+CONST_FLOAT1 {CONST_INT}(\.{CONST_INT})?(E[+-]?{CONST_INT})?
+CONST_FLOAT2 {CONST_INT}?\.{CONST_INT}(E[+-]?{CONST_INT})?
 
-{ADDOP} { 
-			SymbolInfo *s= new  SymbolInfo(yytext, (char *)"ADDOP");
-			yylval = (YYSTYPE)s;
-			return ADDOP;
-		}
+CONST_FLOAT {CONST_FLOAT1}|{CONST_FLOAT2}
+
+backslash \\
+singlequote '
+doublequote "
+delimchar [ntafr"bv0]
 
 
+SPECIAL_CONST_CHAR1 '\\[ntafr"bv0]'
+bs92    '{backslash}{backslash}'
 
-{MULOP}	{
-			SymbolInfo *s= new  SymbolInfo(yytext, (char *)"MULOP");
-			yylval = (YYSTYPE)s;
-			return MULOP;
-		}
+SPECIAL_CONST_CHAR {SPECIAL_CONST_CHAR1}|{bs92}
 
+CONST_CHAR '{letter}'
 
-"=" 	{return ASSIGNOP;}
-
-">" |
-"<" |
-">=" |
-"<=" |
-"==" |
-"!=" {
-		SymbolInfo *s= new  SymbolInfo(yytext, (char *)"RELOP");
-		yylval = (YYSTYPE)s;
-		return RELOP;
-	}
-
-"&&"	|
-"||"	{
-			SymbolInfo *s= new  SymbolInfo(yytext, (char *)"LOGICOP");
-			yylval = (YYSTYPE)s;
-			return LOGICOP;
-		}
-"!"		{	return NOT; }
+LITERAL   \\([nabfrtv\\0]|(''))|[^\\'\n]
+CHAR_LITERAL '({LITERAL})'
 
 
-";" 	{ return SEMICOLON;}
-"," 	{return COMMA;}
-"(" 	{return LPAREN;}
-")" 	{return RPAREN;}
-"{" 	{return LCURL;}
-"}" 	{return RCURL;}
-"[" 	{return LTHIRD;}
-"]" 	{return RTHIRD;}
-"++" 	{return INCOP;}
-"--" 	{return DECOP;}
+RELOP <|<=|>|>=|==|!=
 
+IDENTIFIER ({letter}|_)({letter}|{digit}|_)*
 
+stringContent ({letter}|{digit}|{WHITESPACE})*
 
-{integer}	{
-				SymbolInfo *s= new  SymbolInfo(yytext, (char *)"CONST_INT");
-				yylval = (YYSTYPE)s;
-				return CONST_INT;
-			}
-{number} 	{	
-				SymbolInfo *s= new  SymbolInfo(yytext, (char *)"CONST_FLOAT");
-				yylval = (YYSTYPE)s;
-				return CONST_FLOAT; 
-			}
-{id} 		{	 
-				
-				SymbolInfo *s= table->lookup(yytext);
-				if(s==NULL)
-				{					
-					s= new SymbolInfo(yytext, (char *)"ID");
-				}
-				yylval = (YYSTYPE)s;
-							
-				return ID;
-			}
+SINGLE_LINE_STR \"({stringContent})\"
+MULTI_LINE_STR \"({stringContent}\\\n)+\"
+
+STRING \"(([^\"\n])|(\\\n))*\"
+
+TOO_MANY_DOTS ({CONST_INT}?\.{CONST_INT}?)+
+
+CONST_FLOAT1ill {CONST_INT}(\.{CONST_INT})?(E[+-]?{CONST_FLOAT})?
+CONST_FLOAT2ill {CONST_INT}?\.{CONST_INT}(E[+-]?{CONST_FLOAT})?
+
+ILL_FORMED_FLOAT {CONST_FLOAT1ill}|{CONST_FLOAT2ill}
+
+MultiCharacterConstantError '{IDENTIFIER}'
+
+UnfinishedChar          '{letter}|'{digit}|'{backslash}'|'{backslash}{backslash}
+
+UnfinishedString  \"(([^\"\n])|(\\\n))*
 
 
 %%
 
-int yywrap(void)
-{
-	return 1;
-}
+"if"  { return IF;  }
+"else"  { return ELSE;  }
+"for"   { return FOR; }
+"while" { return WHILE; }
+"do"  { return DO;  }
+"break" { return BREAK; }
+"int"   { return INT; }
+"char"  { return CHAR;  }
+"float" { return FLOAT; }
+"double" {  return DOUBLE;  }
+"void"  { return VOID;  }
+"return"  { return RETURN;  }
+"switch"  { return SWITCH;  }
+"case"  { return CASE;  }
+"default" { return DEFAULT; }
+"continue"  { return CONTINUE;  }
 
 
+{CONST_INT}  {
+      //sscanf(yytext,"%lf", &yylval);
+	    string s = yytext;
+      Token *token = new Token;
+        token->setTokenName("CONST_INT");
+        token->setTokenAttr(s);
+        token->setValue();
+
+        yylval = (YYSTYPE)token;
+
+      return CONST_INT;
+	  }
+
+{CONST_FLOAT}  {
+      //sscanf(yytext,"%lf", &yylval);
+	    string s = yytext;
+      Token *token = new Token;
+        token->setTokenName("CONST_FLOAT");
+        token->setTokenAttr(s);
+        token->setValue();
+
+        yylval = (YYSTYPE)token;
+
+      return CONST_FLOAT;
+	  }
+
+{CONST_CHAR}  {
+	    string s = yytext;
+      Token *token = new Token;
+        token->setTokenName("CONST_CHAR");
+        token->setTokenAttr(s);
+        token->setValue();
+
+        yylval = (YYSTYPE)token;
+
+      return CONST_CHAR;
+	  }
+
+{SPECIAL_CONST_CHAR}  {
+    char ch = yytext[2];
+    char detectedChar=0;
+    // ntafr"bv0
+    switch(ch){
+        case 'n': { detectedChar='\n';  break;  }
+        case 't': { detectedChar='\t';  break;  }
+        case 'a': { detectedChar='\a';  break;  }
+        case 'f': { detectedChar='\f';  break;  }
+        case 'r': { detectedChar='\r';  break;  }
+        case '"': { detectedChar='\"';  break;  }
+        //case '\\': { detectedChar='\\'; cout<<"\nhere\n"; break;  }
+        case 'b': { detectedChar='\b';  break;  }
+        case 'v': { detectedChar='\v';  break;  }
+        case '0': { detectedChar='\0';  break;  }
+        default:{   break;  }
+        
+      }
+	    string temp = ""; temp+=detectedChar;
+        Token *token = new Token;
+        token->setTokenName("SPECIAL_CONST_CHAR");
+        token->setTokenAttr(temp);
+        token->setValue();
+
+        yylval = (YYSTYPE)token;
+
+      return SPECIAL_CONST_CHAR;
+	  }
+
+  
+"+" |
+"-"         {   string s = yytext;
+                Token *token = new Token;
+                token->setTokenName("ADDOP");
+                token->setTokenAttr(s);
+                yylval = (YYSTYPE)token;
+                return ADDOP; 
+            }
+"/"  |
+"*"  |
+"%"     { string s = yytext;
+            Token *token = new Token;
+            token->setTokenName("MULOP");
+            token->setTokenAttr(s);
+            yylval = (YYSTYPE)token;
+            return MULOP; 
+          }
+
+"++"    {
+            return INCOP;
+        }
+"--"    { return DECOP; }
+{RELOP}  {
+            opPunch("RELOP");
+            return RELOP;
+        }
+
+"="    {
+            opPunch("ASSIGNOP");
+            return ASSIGNOP;
+        }
+
+"&&"  |
+"||"    {
+            opPunch("LOGICOP");
+            return LOGICOP;
+        }
+
+"!"      {
+            opPunch("NOT");
+            return NOT;
+        }
+
+"("       {     return LPAREN; }
+")"       { 
+                return RPAREN; 
+          }
+"{"      {
+            return LCURL;
+        }
 
 
+"}"      {
+            return RCURL;
+        }
 
+"["      {
+            return LTHIRD;
+        }
+
+"]"      {
+            return RTHIRD;
+        }
+
+","      {
+            return COMMA;
+        }
+
+";"      {
+            return SEMICOLON;
+        }
+{IDENTIFIER}  {
+                  defaultDo("ID");
+                  return ID;
+              } 
+
+{STRING}      {
+                  defaultDo("STRING");
+                  return STRING;
+            }
+
+"//".*                                    { /* DO NOTHING */  } 
+[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { /* DO NOTHING */  }
+
+{WHITESPACE}    {  /* DO NOTHING */   }
+"\n"      { LineNo++; return NEWLINE; }
+
+{TOO_MANY_DOTS} {
+                    ErrorCount++;
+                    fprintf(errorfile, "LexError at Line %d: %s\n", LineNo, yytext);
+                    return TOO_MANY_DOTS;
+                }
+
+{ILL_FORMED_FLOAT}  {       
+                    ErrorCount++;
+                    fprintf(errorfile, "LexError at Line %d: %s\n", LineNo, yytext);
+                    return ILL_FORMED_FLOAT;
+                    }
+
+{MultiCharacterConstantError}   {
+                                ErrorCount++;
+                                fprintf(errorfile, "LexError at Line %d: %s\n", LineNo, yytext);            
+                                 return MultiCharacterConstantError; 
+                                }
+
+{UnfinishedChar}    {
+                    ErrorCount++;
+                    fprintf(errorfile, "LexError at Line %d: %s\n", LineNo, yytext);
+                      return UnfinishedChar;
+                    }
+
+{UnfinishedString}  {
+                      ErrorCount++;
+                      fprintf(errorfile, "LexError at Line %d: %s\n", LineNo, yytext); 
+                      return UnfinishedString;
+                    }
+
+[/][*][^*]*[*]+([^*/])*    {
+                     ErrorCount++;
+                     fprintf(errorfile, "LexError at Line %d: %s\n", LineNo, yytext);
+                     return UnfinishedComment; 
+                    }
+
+.                   {
+                        ErrorCount++;
+                        fprintf(errorfile, ". Rule: Others/LexError at Line %d: %s\n", LineNo, yytext);
+                        return OTHERS_DOT;
+                    }
+%%

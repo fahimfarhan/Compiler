@@ -1,8 +1,0 @@
- ScopeTable # 1
-0 -->  < CONST_INT : 1 >  < CONST_INT : 1 >  < CONST_FLOAT : 123.47E10 >  < CONST_CHAR : 'a' > 
-1 --> 
-2 -->  < CONST_FLOAT : 123.47 >  < CONST_INT : 3 >  < SPECIAL_CONST_CHAR : 	 > 
-3 -->  < CONST_INT : 123 > 
-4 --> 
-5 -->  < CONST_INT : 456 > 
-6 -->  < CONST_INT : 7 > 
