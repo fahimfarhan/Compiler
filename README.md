@@ -2,6 +2,8 @@
 In this project, we build a simple compiler that compiles a subset of C language into Assembly x86.
 The project demonstrates various parts / working mechanism of a compiler such as scanning, semantic analysis etc.
 
+## Useful tutorial
+This looks promising! [link](https://steemit.com/utopian-io/@drifter1/writing-a-simple-compiler-on-my-own-combine-flex-and-bison)
 # Prerequisites
 0. Linux terminal
 1. A good understanding of recursion
